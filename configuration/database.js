@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const dbConn = 'mongodb://localhost:27017/online-store'
 
-const databaseConfig = async app => {
+module.exports = async app => {
     try {
         await mongoose.connect(dbConn, {
             useUnifiedTopology: true,
@@ -15,5 +15,3 @@ const databaseConfig = async app => {
         process.exit(1)
     }
 }
-
-module.exports = databaseConfig

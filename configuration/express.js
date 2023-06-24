@@ -1,8 +1,7 @@
-const { json, urlencoded } = require("express")
+const { json } = require("express")
+const cors = require("../middleware/cors")
 
-const expressConfig = app => {
+module.exports = app => {
     app.use(json())
-    app.use(urlencoded({ extended: true }))
+    app.use(cors())
 }
-
-module.exports = expressConfig

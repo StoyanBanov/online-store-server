@@ -1,5 +1,2 @@
-const routesConfig = app => {
-
+module.exports = app => {
 }
-
-module.exports = routesConfig
