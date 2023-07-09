@@ -5,7 +5,7 @@ const { register } = require('../services/authService')
 
 const authController = require('express').Router()
 
-authController('/register',
+authController.post('/register',
     hasGuest(),
     body(['fname', 'lname', 'password', 'confirm-password', 'email', 'phone']).trim(),
     body(['fname', 'lname', 'password', 'confirm-password', 'email']).isLength({ min: 1 }).withMessage('Required fields are missing'),
@@ -26,7 +26,7 @@ authController('/register',
         }
     })
 
-authController('/login',
+authController.post('/login',
     hasGuest(),
     body(['password', 'email']).trim(),
     body(['password', 'email']).isLength({ min: 1 }).withMessage("Wrong username or password"),

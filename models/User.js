@@ -47,12 +47,12 @@ const schema = new Schema({
     address: {
         type: ObjectId,
         ref: 'Address',
-        default: { street, city, zipCode, county, country }
+        default: { street: "", city: "", zipCode: "", county: "", country: "" }
     },
     secondAddress: {
         type: ObjectId,
         ref: 'Address',
-        default: { street, city, zipCode, county, country }
+        default: { street: "", city: "", zipCode: "", county: "", country: "" }
     },
     shoppingCart: {
         type: ObjectId,

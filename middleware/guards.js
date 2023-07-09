@@ -1,3 +1,11 @@
+const hasAdmin = () => (req, res, next) => {
+    if (req.token && req.user.roles.includes('admin')) {
+        next()
+    } else {
+        res.status('401').end()
+    }
+}
+
 const hasToken = () => (req, res, next) => {
     if (req.token) {
         next()
@@ -15,6 +23,7 @@ const hasGuest = () => (req, res, next) => {
 }
 
 module.exports = {
+    hasAdmin,
     hasToken,
     hasGuest
 }

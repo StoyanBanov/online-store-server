@@ -1,7 +1,7 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
 const schema = new Schema({
-    name: {
+    title: {
         type: String,
         minLength: [2, 'Item must be at least 2 characters long'],
         maxLength: [20, 'Item can\'t be more than 20 characters long']
@@ -16,6 +16,10 @@ const schema = new Schema({
         minLength: [20, 'Description must be at least 20 characters long'],
         maxLength: [3000, 'Description can\'t be more than 3000 characters long']
     },
+    images: {
+        type: [String],
+        default: []
+    },
     category: {
         type: ObjectId,
         ref: 'Category',
@@ -24,7 +28,7 @@ const schema = new Schema({
     _creator: {
         type: ObjectId,
         ref: 'User',
-        required: true
+        //required: true
     }
 })
 
