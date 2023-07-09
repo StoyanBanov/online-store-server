@@ -7,6 +7,11 @@ const schema = new Schema({
         minLength: [20, 'Description must be at least 20 characters long'],
         maxLength: [2000, 'Description can\'t be more than 2000 characters long']
     },
+    item: {
+        type: ObjectId,
+        ref: 'Item',
+        required: true
+    },
     _creator: {
         type: ObjectId,
         ref: 'User',
