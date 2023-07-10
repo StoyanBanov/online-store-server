@@ -18,7 +18,7 @@ function createItem(data) {
 
 async function editItemById(id, data) {
     const existingItem = await Item.findById(id)
-    existingItem.name = data.name
+    existingItem.title = data.title
     existingItem.category = data.category
     existingItem.price = data.price
     existingItem.description = data.description

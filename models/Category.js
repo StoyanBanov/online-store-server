@@ -1,7 +1,7 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
 const schema = new Schema({
-    name: {
+    title: {
         type: String,
         minLength: [2, 'Category must be at least 2 characters long'],
         maxLength: [20, 'Category can\'t be more than 20 characters long']
@@ -13,7 +13,7 @@ const schema = new Schema({
     _creator: {
         type: ObjectId,
         ref: 'User',
-        required: true
+        //required: true
     }
 })
 

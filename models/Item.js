@@ -16,6 +16,10 @@ const schema = new Schema({
         minLength: [20, 'Description must be at least 20 characters long'],
         maxLength: [3000, 'Description can\'t be more than 3000 characters long']
     },
+    thumbnail: {
+        type: String,
+        default: ''
+    },
     images: {
         type: [String],
         default: []
