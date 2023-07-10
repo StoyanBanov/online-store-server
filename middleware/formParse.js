@@ -4,6 +4,7 @@ const fs = require('fs').promises
 module.exports = () => (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
+        console.log(fields);
         const body = Object.entries(fields).reduce((data, [key, value]) => {
             data[key] = value[0]
             return data

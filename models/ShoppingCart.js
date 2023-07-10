@@ -9,7 +9,7 @@ const schema = new Schema({
 })
 
 schema.methods.getTotalPrice = function () {
-    return this.items.reduce((total, current) => total + current, 0)
+    //TODO
 };
 
 const ShoppingCart = model('ShoppingCart', schema)

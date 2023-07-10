@@ -3,11 +3,16 @@ const { Schema, model, Types: { ObjectId } } = require('mongoose')
 const schema = new Schema({
     title: {
         type: String,
+        required: true,
         minLength: [2, 'Category must be at least 2 characters long'],
         maxLength: [20, 'Category can\'t be more than 20 characters long']
     },
     parentCategory: {
         type: ObjectId,
+        ref: 'Category'
+    },
+    childCategories: {
+        type: [ObjectId],
         ref: 'Category'
     },
     _creator: {

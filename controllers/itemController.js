@@ -1,5 +1,5 @@
 const { hasAdmin } = require('../middleware/guards')
-const { createItem } = require('../services/itemService')
+const { createItem, getAllItems } = require('../services/itemService')
 const formParse = require('../middleware/formParse')
 
 const fs = require('fs').promises
@@ -24,6 +24,19 @@ itemController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
         })
 
         res.status(200).json(item)
+    } catch (error) {
+        console.log(error);
+        res.status(404).end()
+    }
+})
+
+itemController.get('/', /*hasAdmin(),*/formParse(), async (req, res) => {
+    try {
+        let where
+        if (req.query.where) {
+            where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? a.substring(1, a.length - 1) : a)))
+        }
+        res.status(200).json(await getAllItems({ ...req.query, where }))
     } catch (error) {
         console.log(error);
         res.status(404).end()

@@ -1,11 +1,7 @@
 const Item = require("../models/Item");
 
-function getAllItems() {
-    return Item.find()
-}
-
-function getAllItemsForCategory(category) {
-    return Item.find({ category })
+function getAllItems({ where, limit = 10, skip = 0 }) {
+    return Item.find(where).limit(limit).skip(skip * limit)
 }
 
 function getItemById(id) {
@@ -33,7 +29,6 @@ function deleteItemById(id) {
 
 module.exports = {
     getAllItems,
-    getAllItemsForCategory,
     getItemById,
     createItem,
     editItemById,
