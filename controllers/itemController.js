@@ -9,10 +9,16 @@ const itemController = require('express').Router()
 itemController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
     try {
         const itemData = { ...req.formBody }
-        if (req.formImages.thumbnail)
-            itemData.thumbnail = req.formImages.thumbnail.filename
-        if (req.formImages.images)
-            itemData.images = req.formImages.images.map(i => i.filename)
+        const thumbnailImg = req.formImages.thumbnail
+        const imagesImg = req.formImages.images
+
+        if (thumbnailImg)
+            itemData.thumbnail = thumbnailImg.filename
+        if (imagesImg) {
+            if (Array.isArray(imagesImg))
+                itemData.images = imagesImg.map(i => i.filename)
+            else itemData.images = imagesImg.filename
+        }
 
         const item = await createItem(itemData)
 

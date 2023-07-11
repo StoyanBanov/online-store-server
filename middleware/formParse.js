@@ -11,6 +11,7 @@ module.exports = () => (req, res, next) => {
 
         const images = {}
         for (const [key, value] of Object.entries(files)) {
+            //console.log(value);
             if (value.length == 1) {
                 images[key] = await makeImage(value[0])
             } else {
@@ -19,6 +20,7 @@ module.exports = () => (req, res, next) => {
                     images[key].push(await makeImage(file))
             }
         }
+        console.log(images);
         req.formBody = body
         req.formImages = images
 
