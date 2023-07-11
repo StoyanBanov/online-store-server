@@ -1,4 +1,5 @@
-const { Schema, model, Types: { ObjectId } } = require('mongoose')
+const { Schema, model, Types: { ObjectId } } = require('mongoose');
+const Item = require('./Item');
 
 const schema = new Schema({
     title: {
@@ -14,6 +15,10 @@ const schema = new Schema({
     childCategories: {
         type: [ObjectId],
         ref: 'Category'
+    },
+    items: {
+        type: [ObjectId],
+        ref: 'Item'
     },
     _creator: {
         type: ObjectId,

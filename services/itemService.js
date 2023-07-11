@@ -1,18 +1,27 @@
+const Category = require("../models/Category");
 const Item = require("../models/Item");
 
-function getAllItems({ where, limit = 10, skip = 0 }) {
+async function getAllItems({ where, limit = 10, skip = 0 }) {
     return Item.find(where).limit(limit).skip(skip * limit)
 }
 
-function getItemById(id) {
+async function getItemById(id) {
     return Item.findById(id)
 }
 
-function createItem(data) {
-    return Item.create(data)
+async function createItem(data) {
+    const cat = await Category.findById(data.category)
+    if (cat) {
+        const item = await Item.create(data)
+
+        cat.items.push(item._id)
+        await cat.save()
+
+        return item
+    } else throw new Error("No category")
 }
 
-async function editItemById(id, data) {
+async function editItemById(id, data) {//TODO debug
     const existingItem = await Item.findById(id)
     existingItem.title = data.title
     existingItem.category = data.category
@@ -23,7 +32,7 @@ async function editItemById(id, data) {
     return existingItem
 }
 
-function deleteItemById(id) {
+async function deleteItemById(id) {
     return Item.findOneAndDelete({ _id: id })
 }
 

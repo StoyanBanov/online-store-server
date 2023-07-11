@@ -30,7 +30,7 @@ itemController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
     }
 })
 
-itemController.get('/', /*hasAdmin(),*/formParse(), async (req, res) => {
+itemController.get('/', /*hasAdmin(),*/ async (req, res) => {
     try {
         let where
         if (req.query.where) {

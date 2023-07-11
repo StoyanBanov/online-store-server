@@ -19,7 +19,7 @@ categoryController.get('/', /*hasAdmin(),*/async (req, res) => {
         if (req.query.where) {
             where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? a.substring(1, a.length - 1) : a)))
         }
-        res.status(200).json(await getCategories(where))
+        res.status(200).json(await getCategories({ ...req.query, where }))
     } catch (error) {
         console.log(error);
         res.status(404).end()
