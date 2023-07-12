@@ -34,7 +34,7 @@ const schema = new Schema({
             validator: value => (
                 (
                     value
-                    && value.every((n, i) => Number.isInteger(n) || n == ' ' || (i == 0 && n == '+'))
+                    && value.split('').every((n, i) => Number.isInteger(n) || (i > 0 && n == ' ') || (i == 0 && n == '+'))
                     && value.length >= 7
                     && value.length <= 12
                 )
@@ -45,19 +45,17 @@ const schema = new Schema({
     },
     address: {
         type: ObjectId,
-        ref: 'Address',
-        default: { street: "", city: "", zipCode: "", county: "", country: "" }
+        ref: 'Address'
     },
     secondAddress: {
         type: ObjectId,
-        ref: 'Address',
-        default: { street: "", city: "", zipCode: "", county: "", country: "" }
+        ref: 'Address'
     },
     shoppingCart: {
         type: ObjectId,
         ref: 'ShoppingCart'
     },
-    role: {
+    roles: {
         type: [String],
         enum: ['user', 'admin'],
         default: ['user']

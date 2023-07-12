@@ -8,17 +8,27 @@ const ShoppingCart = require("../models/ShoppingCart");
 
 async function register(data) {
     const newUser = await User.create({ ...data, password: await bcrypt.hash(data.password, bcryptHashRounds) })
-    newUser.shoppingCart = (await ShoppingCart.create())._id
+    newUser.shoppingCart = (await ShoppingCart.create({}))._id
     await newUser.save()
-    return { ...newUser, accessToken: createToken(newUser) }
+    return await extractUser(newUser)
 }
 
 async function login({ email, password }) {
     const existingUser = await User.findOne({ email })
     if (existingUser && await bcrypt.compare(password, existingUser.password)) {
-        return { ...existingUser, accessToken: createToken(newUser) }
+        return extractUser(existingUser)
     } else {
         throw new Error('Wrong username or password')
+    }
+}
+
+async function extractUser(userDoc) {
+    return {
+        accessToken: await createToken(userDoc),
+        email: userDoc.email,
+        verified: userDoc.verified,
+        shoppingCart: userDoc.shoppingCart,
+        roles: userDoc.roles
     }
 }
 

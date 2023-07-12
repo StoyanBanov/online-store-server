@@ -1,5 +1,5 @@
 const hasAdmin = () => (req, res, next) => {
-    if (req.token && req.user.roles.includes('admin')) {
+    if (req.token && req.user.verified && req.user.roles.includes('admin')) {
         next()
     } else {
         res.status('401').end()
@@ -7,7 +7,7 @@ const hasAdmin = () => (req, res, next) => {
 }
 
 const hasToken = () => (req, res, next) => {
-    if (req.token) {
+    if (req.token && req.user.verified) {
         next()
     } else {
         res.status('401').end()
