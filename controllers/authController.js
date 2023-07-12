@@ -13,7 +13,7 @@ authController.post('/register',
     body(['fname', 'lname']).isAlpha().withMessage('The names must contain english letters only'),
     body('password').matches(passwordRegex).withMessage('The password is not safe enough!')
         .isLength({ min: 10, max: 30 }).withMessage('The password must be between 10 and 30 characters!'),
-    body('confirm-password').custom((value, { req }) => value == req.body.password).withMessage('The passwords are not the same!'),
+    body('repeat-password').custom((value, { req }) => value == req.body.password).withMessage('The passwords are not the same!'),
     async (req, res) => {
         const { errors } = validationResult
         if (errors) throw errors

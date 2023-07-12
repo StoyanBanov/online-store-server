@@ -22,11 +22,11 @@ itemController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
 
         const item = await createItem(itemData)
 
-        Object.entries(req.formImages).forEach(async ([key, i]) => {
-            if (key === 'thumbnail')
-                await fs.writeFile(`./static/images/${i.filename}`, i.image)
+        Object.values(req.formImages).forEach(async (i) => {
+            if (Array.isArray(i))
+                await Promise.all(i.map(a => fs.writeFile(`./static/images/${a.filename}`, a.image)))
             else
-                Promise.all(i.map(a => fs.writeFile(`./static/images/${a.filename}`, a.image)))
+                await fs.writeFile(`./static/images/${i.filename}`, i.image)
         })
 
         res.status(200).json(item)
