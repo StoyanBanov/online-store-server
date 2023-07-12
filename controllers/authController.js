@@ -1,8 +1,7 @@
 const { body, validationResult } = require('express-validator')
 const { hasGuest } = require('../middleware/guards')
 const { passwordRegex } = require('../globals')
-const { register } = require('../services/authService')
-const { sendConfirmationEmail } = require('../util/emailVerification')
+const { register, login, verify } = require('../services/authService')
 
 const authController = require('express').Router()
 
@@ -20,7 +19,6 @@ authController.post('/register',
         if (errors.length > 0) throw errors
         try {
             const user = await register(req.body)
-            await sendConfirmationEmail(user)
             res.status(201).json(user)
         } catch (error) {
             console.log(error);
@@ -37,11 +35,21 @@ authController.post('/login',
         const { errors } = validationResult
         if (errors) throw errors
         try {
-            const user = await register(req.body)
+            const user = await login(req.body)
             res.status(201).json(user)
         } catch (error) {
             res.status(404).json({ message: error.message })
         }
     })
+
+authController.post('/verify', async (req, res) => {
+    try {
+        const user = await verify(req.body)
+        res.status(201).json(user)
+    } catch (error) {
+        console.log(error);
+        res.status(404).json({ message: error.message })
+    }
+})
 
 module.exports = authController

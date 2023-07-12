@@ -2,8 +2,6 @@ const nodemailer = require('nodemailer');
 const { companyEmail } = require('../globals');
 
 async function sendConfirmationEmail({ email, username }) {
-    console.log(email);
-    console.log(companyEmail.name);
     const transporter = nodemailer.createTransport({
         host: 'smtp.abv.bg',
         port: 465,
@@ -17,12 +15,16 @@ async function sendConfirmationEmail({ email, username }) {
         }
     });
 
+    let verificationCode = `${Math.trunc(Math.random() * 10)}${Math.trunc(Math.random() * 10)}${Math.trunc(Math.random() * 10)}${Math.trunc(Math.random() * 10)}`
+
     await transporter.sendMail({
         from: companyEmail.name,
         to: email,
         subject: 'E-mail verification',
-        text: `Hello, ${username}!\nTo verify your email please copy and paste the following code: ${Math.trunc(Math.random() * 10)}${Math.trunc(Math.random() * 10)}${Math.trunc(Math.random() * 10)}${Math.trunc(Math.random() * 10)}`,
+        text: `Hello, ${username}!\nTo verify your email please copy and paste the following code: ${verificationCode}`,
     });
+
+    return verificationCode
 }
 
 module.exports = {

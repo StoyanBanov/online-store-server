@@ -24,10 +24,6 @@ const schema = new Schema({
         maxLength: [30, 'Email can\'t be more than 30 characters long'],
         unique: [true, 'The email is already registered']
     },
-    verified: {
-        type: Boolean,
-        default: false
-    },
     phone: {
         type: String,
         validate: {
