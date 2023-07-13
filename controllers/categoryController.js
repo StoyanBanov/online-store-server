@@ -1,6 +1,7 @@
 const formParse = require('../middleware/formParse');
 const { hasAdmin } = require('../middleware/guards');
 const { createCategory, getCategories } = require('../services/categoryService');
+const { parseError } = require('../util/errorParsing');
 
 const categoryController = require('express').Router()
 
@@ -9,7 +10,7 @@ categoryController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
         res.status(200).json(await createCategory(req.formBody))
     } catch (error) {
         console.log(error);
-        res.status(404).end()
+        res.status(400).json(parseError(error))
     }
 })
 
@@ -22,7 +23,7 @@ categoryController.get('/', /*hasAdmin(),*/async (req, res) => {
         res.status(200).json(await getCategories({ ...req.query, where }))
     } catch (error) {
         console.log(error);
-        res.status(404).end()
+        res.status(404).json(parseError(error))
     }
 })
 

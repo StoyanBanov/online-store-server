@@ -1,6 +1,7 @@
 const { hasAdmin } = require('../middleware/guards')
 const { createItem, getAllItems } = require('../services/itemService')
 const formParse = require('../middleware/formParse')
+const { parseError } = require('../util/errorParsing')
 
 const fs = require('fs').promises
 
@@ -32,7 +33,7 @@ itemController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
         res.status(200).json(item)
     } catch (error) {
         console.log(error);
-        res.status(404).end()
+        res.status(400).json(parseError(error))
     }
 })
 
@@ -45,7 +46,7 @@ itemController.get('/', /*hasAdmin(),*/ async (req, res) => {
         res.status(200).json(await getAllItems({ ...req.query, where }))
     } catch (error) {
         console.log(error);
-        res.status(404).end()
+        res.status(404).json(parseError(error))
     }
 })
 
