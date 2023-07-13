@@ -1,8 +1,12 @@
 const Category = require("../models/Category");
 const Item = require("../models/Item");
 
-async function getAllItems({ where, limit = 10, skip = 0 }) {
-    return Item.find(where).limit(limit).skip(skip * limit)
+async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
+    const searchRegex = new RegExp(search, 'i')
+    return Item.find(where)
+        .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
+        .limit(limit)
+        .skip(skip * limit)
 }
 
 async function getItemById(id) {
