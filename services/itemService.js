@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Item = require("../models/Item");
+const Rating = require("../models/Rating");
 
 async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
     const searchRegex = new RegExp(search, 'i')
@@ -10,6 +11,7 @@ async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
 }
 
 async function getItemById(id) {
+    const i = await Item.findById(id)
     return Item.findById(id)
 }
 
@@ -40,10 +42,26 @@ async function deleteItemById(id) {
     return Item.findOneAndDelete({ _id: id })
 }
 
+async function addUserRatingForItemId(data, userId) {
+    const rating = await Rating.findOne({ _creator: userId, item: data.item })
+    if (rating) {
+        rating.rating = data.rating
+        await rating.save()
+        return rating
+    }
+    return Rating.create({ ...data, _creator: userId })
+}
+
+async function getRating({ where }) {
+    return Rating.find(where)
+}
+
 module.exports = {
     getAllItems,
     getItemById,
     createItem,
     editItemById,
-    deleteItemById
+    deleteItemById,
+    addUserRatingForItemId,
+    getRating
 }

@@ -41,18 +41,22 @@ async function verify({ userId, code }) {
 async function extractUser(userDoc) {
     const verificationCode = await VerificationCode.findOne({ user: userDoc._id })
 
-    return {
-        accessToken: createToken(userDoc),
+    const user = {
         verified: verificationCode == null,
         _id: userDoc._id,
         email: userDoc.email,
         shoppingCart: userDoc.shoppingCart,
         roles: userDoc.roles
     }
+
+    return {
+        ...user,
+        accessToken: createToken(user)
+    }
 }
 
-function createToken({ _id, verified, fname, shoppingCart }) {
-    return jwt.sign({ _id, verified, fname, shoppingCart }, jwtSecret)
+function createToken(user) {
+    return jwt.sign(user, jwtSecret)
 }
 
 module.exports = {

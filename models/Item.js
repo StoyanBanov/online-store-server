@@ -1,4 +1,5 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
+const Rating = require('./Rating')
 
 const schema = new Schema({
     title: {
@@ -36,8 +37,13 @@ const schema = new Schema({
     }
 })
 
-schema.virtual('rating').get(function () {
+schema.virtual('totalRatingVotes').get(function () {
     return Rating.count({ item: this._id })
+})
+
+schema.virtual('rating').get(async function () {
+    const ratings = await Rating.find({ item: this._id })
+    return (ratings.reduce((rating, curRate) => rating + curRate.rating, 0) / ratings.length) || 0
 })
 
 const Item = model('Item', schema)
