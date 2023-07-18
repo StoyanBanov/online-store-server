@@ -17,6 +17,15 @@ const schema = new Schema({
         minLength: [20, 'Description must be at least 20 characters long'],
         maxLength: [3000, 'Description can\'t be more than 3000 characters long']
     },
+    count: {
+        type: Number,
+        required: [true, 'Count is required'],
+        min: [0, 'Count can\'t be negative'],
+        validate: {
+            validator: value => Number.isInteger(value),
+            message: 'Count must be an integer'
+        }
+    },
     thumbnail: {
         type: String,
         default: ''

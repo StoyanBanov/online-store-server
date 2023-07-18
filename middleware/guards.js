@@ -7,7 +7,6 @@ const hasAdmin = () => (req, res, next) => {
 }
 
 const hasToken = () => (req, res, next) => {
-    console.log(req.user, req.token);
     if (req.token && req.user.verified) {
         next()
     } else {
