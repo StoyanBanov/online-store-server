@@ -1,9 +1,8 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
 const schema = new Schema({
-    items: {
-        type: Map,
-        of: new Schema({
+    items: [
+        new Schema({
             item: {
                 type: ObjectId,
                 ref: 'Item',
@@ -19,7 +18,7 @@ const schema = new Schema({
                 }
             },
         })
-    }
+    ]
 })
 
 schema.methods.getTotalPrice = function () {
