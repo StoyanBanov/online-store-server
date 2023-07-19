@@ -2,7 +2,7 @@ const Item = require("../models/Item")
 const ShoppingCart = require("../models/ShoppingCart")
 
 async function getCartById(id) {
-    return ShoppingCart.findById(id).populate('items.$*.item')
+    return ShoppingCart.findById(id).populate('items.item')
 }
 
 async function addToCart(cartId, { item, count }) {
@@ -11,7 +11,7 @@ async function addToCart(cartId, { item, count }) {
     if (!itemToAdd) throw new Error('No such item')
     if (itemToAdd.count < count) throw new Error('Not enough items for count of' + count)
 
-    cart.items.set(item, count)
+    cart.items.push({ item, count })
 
     await cart.save()
 

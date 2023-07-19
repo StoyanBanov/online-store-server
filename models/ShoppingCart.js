@@ -1,8 +1,8 @@
-const { Schema, model, Types: { ObjectId } } = require('mongoose')
+const { Schema, model, Types: { ObjectId }, default: mongoose } = require('mongoose')
 
 const schema = new Schema({
     items: [
-        new Schema({
+        {
             item: {
                 type: ObjectId,
                 ref: 'Item',
@@ -17,13 +17,14 @@ const schema = new Schema({
                     message: 'Count must be an integer'
                 }
             },
-        })
+        }
     ]
 })
 
-schema.methods.getTotalPrice = function () {
-    //TODO
-};
+schema.virtual('totalPrice').get(async function () {
+    const cart = await mongoose.model('ShoppingCart').findById(this._id).populate('items.item')
+    return cart.items.reduce((total, itemObj) => total + itemObj.item.price * itemObj.count, 0)
+})
 
 const ShoppingCart = model('ShoppingCart', schema)
 
