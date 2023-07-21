@@ -22,7 +22,31 @@ async function addToCart(cartId, { item, count }) {
     return cart
 }
 
+async function removeFromCart(cartId, itemId) {
+    const cart = await ShoppingCart.findById(cartId)
+    if (!cart) throw new Error('No such cart')
+
+    cart.items.splice(cart.items.indexOf(cart.items.find(i => i.item._id == itemId)), 0)
+
+    await cart.save()
+
+    return cart
+}
+
+async function emptyCart(cartId) {
+    const cart = await ShoppingCart.findById(cartId)
+    if (!cart) throw new Error('No such cart')
+
+    cart.items = []
+
+    await cart.save()
+
+    return cart
+}
+
 module.exports = {
     getCartById,
-    addToCart
+    addToCart,
+    removeFromCart,
+    emptyCart
 }
