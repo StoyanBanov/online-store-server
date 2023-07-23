@@ -11,7 +11,7 @@ async function addToCart(cartId, { item, count }) {
     if (!itemToAdd) throw new Error('No such item')
     if (itemToAdd.count < count) throw new Error('Not enough items for count of' + count)
 
-    const itemAlreadyIn = cart.items.find(i => i.item._id === item)
+    const itemAlreadyIn = cart.items.find(i => i.item.toString() === item)
     if (itemAlreadyIn)
         itemAlreadyIn.count = count
     else
@@ -22,11 +22,11 @@ async function addToCart(cartId, { item, count }) {
     return cart
 }
 
-async function removeFromCart(cartId, itemId) {
+async function removeFromCart(cartId, itemObjId) {
     const cart = await ShoppingCart.findById(cartId)
     if (!cart) throw new Error('No such cart')
 
-    cart.items.splice(cart.items.indexOf(cart.items.find(i => i.item._id == itemId)), 0)
+    cart.items.splice(cart.items.indexOf(cart.items.find(i => i._id == itemObjId)), 0)
 
     await cart.save()
 
