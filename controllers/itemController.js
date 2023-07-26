@@ -2,8 +2,7 @@ const { hasAdmin, hasToken } = require('../middleware/guards')
 const { createItem, getAllItems, getItemById, addUserRatingForItemId, getRating } = require('../services/itemService')
 const formParse = require('../middleware/formParse')
 const { parseError } = require('../util/errorParsing')
-
-const fs = require('fs').promises
+const { addImages } = require('../util/images')
 
 const itemController = require('express').Router()
 
@@ -23,12 +22,7 @@ itemController.post('/', /*hasAdmin(),*/formParse(), async (req, res) => {
 
         const item = await createItem(itemData)
 
-        Object.values(req.formImages).forEach(async (i) => {
-            if (Array.isArray(i))
-                await Promise.all(i.map(a => fs.writeFile(`./static/images/${a.filename}`, a.image)))
-            else
-                await fs.writeFile(`./static/images/${i.filename}`, i.image)
-        })
+        addImages(req.formImages)
 
         res.status(200).json(item)
     } catch (error) {

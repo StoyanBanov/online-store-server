@@ -20,7 +20,7 @@ module.exports = () => (req, res, next) => {
                     images[key].push(await makeImage(file))
             }
         }
-        console.log(images);
+        //console.log(images);
         req.formBody = body
         req.formImages = images
 

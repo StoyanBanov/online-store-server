@@ -1,4 +1,4 @@
-const { Schema, model, Types: { ObjectId } } = require('mongoose');
+const { Schema, model, Types: { ObjectId }, default: mongoose } = require('mongoose');
 const Item = require('./Item');
 
 const schema = new Schema({
@@ -10,7 +10,14 @@ const schema = new Schema({
     },
     parentCategory: {
         type: ObjectId,
-        ref: 'Category'
+        ref: 'Category',
+        validate: {
+            validator: async parentId => {
+                const parentCat = await mongoose.model('Category').findById(parentId)
+                return !!parentCat
+            },
+            message: 'No such category'
+        }
     },
     childCategories: {
         type: [ObjectId],

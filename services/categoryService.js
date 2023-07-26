@@ -14,20 +14,63 @@ async function getCategories({ where, orderBy, asc = 1, limit, skip = 0 }) {
     return Category.find(where).sort({ [orderBy]: Number(asc) }).skip(skip * limit).limit(limit)
 }
 
+async function getCategoryById(id) {
+    return Category.findById(id).populate('childCategories')
+}
+
 async function createCategory(data) {
+    const category = await Category.create(data)
+
+    updateParentCategory(category.parentCategory, category._id)
+
+    return category
+}
+
+async function editCategory(id, data) {
+    const category = await Category.findById(id)
+
+    if (!category)
+        throw new Error('no such category')
+
+    Object.assign(category, data)
+    await category.save()
+
+    updateParentCategory(category.parentCategory, category._id)
+
+    return category
+}
+
+async function delCategory(id) {
+    const category = await Category.findById(id)
+
+    if (category.childCategories.length)
+        throw new Error('Cannot delete category, because it has children')
+    if (category.items.length)
+        throw new Error('Cannot delete category, because it has items')
+
+    await Category.findByIdAndDelete(id)
+
+    updateParentCategory(category.parentCategory, category._id, true)
+
+    return category
+}
+
+async function updateParentCategory(parentId, childId, isDeleting) {
     let parentCat
-    if (data.parentCategory && (parentCat = await Category.findById(data.parentCategory))) {
-        const category = await Category.create(data)
-
-        parentCat.childCategories.push(category._id)
+    if (parentId && (parentCat = await Category.findById(parentId))) {
+        if (!isDeleting) {
+            parentCat.childCategories.push(childId)
+        } else {
+            parentCat.childCategories.splice(parentCat.childCategories.indexOf(parentCat.childCategories.find(c => c._id == childId)), 0)
+        }
         await parentCat.save()
-
-        return category
     }
-    return Category.create(data)
 }
 
 module.exports = {
     getCategories,
-    createCategory
+    getCategoryById,
+    createCategory,
+    editCategory,
+    delCategory
 }
