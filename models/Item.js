@@ -1,5 +1,6 @@
 const { Schema, model, Types: { ObjectId } } = require('mongoose')
 const Rating = require('./Rating')
+const Category = require('./Category')
 
 const schema = new Schema({
     title: {
@@ -37,7 +38,13 @@ const schema = new Schema({
     category: {
         type: ObjectId,
         ref: 'Category',
-        required: [true, 'Category is required']
+        required: [true, 'Category is required'],
+        validate: {
+            validator: async catId => {
+                return catId && !!(await Category.findById(catId))
+            },
+            message: 'No category'
+        }
     },
     _creator: {
         type: ObjectId,

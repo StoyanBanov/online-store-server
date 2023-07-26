@@ -6,6 +6,7 @@ module.exports = () => (req, res, next) => {
     if (token) {
         try {
             req.user = jwt.verify(token, jwtSecret)
+            console.log(req.user);
             req.token = token
         } catch (error) {
             console.log(error);

@@ -22,6 +22,7 @@ authController.post('/register',
             const user = await register(req.body)
             res.status(201).json(user)
         } catch (error) {
+            console.log(error);
             res.status(400).json(parseError(error))
         }
     })
@@ -37,6 +38,7 @@ authController.post('/login',
             const user = await login(req.body)
             res.status(200).json(user)
         } catch (error) {
+            console.log(error);
             res.status(404).json(parseError(error))
         }
     })

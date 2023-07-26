@@ -8,13 +8,16 @@ const schema = new Schema({
         minLength: [2, 'Category must be at least 2 characters long'],
         maxLength: [20, 'Category can\'t be more than 20 characters long']
     },
+    thumbnail: {
+        type: String,
+        default: ''
+    },
     parentCategory: {
         type: ObjectId,
         ref: 'Category',
         validate: {
             validator: async parentId => {
-                const parentCat = await mongoose.model('Category').findById(parentId)
-                return !!parentCat
+                return parentId && !!(await mongoose.model('Category').findById(parentId))
             },
             message: 'No such category'
         }

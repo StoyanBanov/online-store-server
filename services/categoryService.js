@@ -21,12 +21,12 @@ async function getCategoryById(id) {
 async function createCategory(data) {
     const category = await Category.create(data)
 
-    updateParentCategory(category.parentCategory, category._id)
+    await updateParentCategory(category.parentCategory, category._id)
 
     return category
 }
 
-async function editCategory(id, data) {
+async function editCategoryById(id, data) {
     const category = await Category.findById(id)
 
     if (!category)
@@ -35,12 +35,12 @@ async function editCategory(id, data) {
     Object.assign(category, data)
     await category.save()
 
-    updateParentCategory(category.parentCategory, category._id)
+    await updateParentCategory(category.parentCategory, category._id)
 
     return category
 }
 
-async function delCategory(id) {
+async function delCategoryById(id) {
     const category = await Category.findById(id)
 
     if (category.childCategories.length)
@@ -50,7 +50,7 @@ async function delCategory(id) {
 
     await Category.findByIdAndDelete(id)
 
-    updateParentCategory(category.parentCategory, category._id, true)
+    await updateParentCategory(category.parentCategory, category._id, true)
 
     return category
 }
@@ -71,6 +71,6 @@ module.exports = {
     getCategories,
     getCategoryById,
     createCategory,
-    editCategory,
-    delCategory
+    editCategoryById,
+    delCategoryById
 }

@@ -11,23 +11,18 @@ async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
 }
 
 async function getItemById(id) {
-    const i = await Item.findById(id)
-    return Item.findById(id)
+    return await Item.findById(id)
 }
 
 async function createItem(data) {
-    const cat = await Category.findById(data.category)
-    if (cat) {
-        const item = await Item.create(data)
+    const item = await Item.create(data)
 
-        cat.items.push(item._id)
-        await cat.save()
+    await updateCategory(item.category, item._id)
 
-        return item
-    } else throw new Error("No category")
+    return item
 }
 
-async function editItemById(id, data) {//TODO debug
+async function editItemById(id, data) {
     const existingItem = await Item.findById(id)
     existingItem.title = data.title
     existingItem.category = data.category
@@ -35,11 +30,17 @@ async function editItemById(id, data) {//TODO debug
     existingItem.description = data.description
     await existingItem.save()
 
+    await updateCategory(existingItem.category, existingItem._id)
+
     return existingItem
 }
 
 async function deleteItemById(id) {
-    return Item.findOneAndDelete({ _id: id })
+    const item = await Item.findOneAndDelete({ _id: id })
+
+    await updateCategory(item.category, item._id, true)
+
+    return item
 }
 
 async function addUserRatingForItemId(data, userId) {
@@ -54,6 +55,18 @@ async function addUserRatingForItemId(data, userId) {
 
 async function getRating({ where }) {
     return Rating.find(where)
+}
+
+async function updateCategory(catId, itemId, isDeleting) {
+    const cat = await Category.findById(catId)
+    if (cat) {
+        if (!isDeleting) {
+            cat.items.push(itemId)
+        } else {
+            cat.items.splice(cat.items.findIndex(cat.items.find(i => i._id == itemId)), 0)
+        }
+        await cat.save()
+    }
 }
 
 module.exports = {
