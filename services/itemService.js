@@ -11,7 +11,7 @@ async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
 }
 
 async function getItemById(id) {
-    return await Item.findById(id)
+    return Item.findById(id)
 }
 
 async function createItem(data) {
@@ -54,6 +54,7 @@ async function addUserRatingForItemId(data, userId) {
 }
 
 async function getRating({ where }) {
+    console.log(where);
     return Rating.find(where)
 }
 

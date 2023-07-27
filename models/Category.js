@@ -24,7 +24,7 @@ const schema = new Schema({
     },
     childCategories: {
         type: [ObjectId],
-        ref: 'Category'
+        ref: 'Category',
     },
     items: {
         type: [ObjectId],

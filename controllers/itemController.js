@@ -19,6 +19,19 @@ itemController.get('/', async (req, res) => {
     }
 })
 
+itemController.get('/rating', async (req, res) => {
+    try {
+        let where
+        if (req.query.where) {
+            where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? a.substring(1, a.length - 1) : a)))
+        }
+        res.status(200).json(await getRating({ ...req.query, where }))
+    } catch (error) {
+        console.log(error);
+        res.status(404).json(parseError(error))
+    }
+})
+
 itemController.get('/:id', async (req, res) => {
     try {
         const item = await getItemById(req.params.id)
@@ -27,19 +40,6 @@ itemController.get('/:id', async (req, res) => {
             rating: await item.rating,
             totalRatingVotes: await item.totalRatingVotes
         })
-    } catch (error) {
-        console.log(error);
-        res.status(404).json(parseError(error))
-    }
-})
-
-itemController.get('/rating', async (req, res) => {
-    try {
-        let where
-        if (req.query.where) {
-            where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? a.substring(1, a.length - 1) : a)))
-        }
-        res.status(200).json(await getRating({ ...req.query, where }))
     } catch (error) {
         console.log(error);
         res.status(404).json(parseError(error))

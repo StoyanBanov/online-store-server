@@ -11,7 +11,7 @@ function addImages(formImages) {
 
 function delImages(imgNames) {
     imgNames.forEach(async n => {
-        await fs.unlink('../static/images/' + n)
+        await fs.unlink('./static/images/' + n)
     })
 }
 
