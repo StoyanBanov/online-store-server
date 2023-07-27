@@ -97,6 +97,7 @@ itemController.put('/:id', formParse(), hasAdmin(), async (req, res) => {
         const item = await editItemById(req.params.id, itemData)
 
         addImages(req.formImages)
+        delImages(req.formBody.imagesToRemove)
 
         res.status(200).json(item)
     } catch (error) {
