@@ -16,7 +16,6 @@ async function getItemById(id) {
 
 async function createItem(data) {
     const item = await Item.create(data)
-
     await updateCategory(item.category, item._id)
 
     return item
@@ -25,10 +24,27 @@ async function createItem(data) {
 async function editItemById(id, data) {
     const existingItem = await Item.findById(id)
 
-    Object.assign(existingItem, data)
+    if (!existingItem) throw new Error('No such item')
+
+    const isNewCategory = existingItem.category.toString() != data.category
+    const oldCategory = existingItem.category
+
+    if (!data.images) data.images = []
+    console.log(data.imagesToRemove);
+
+    Object.assign(existingItem,
+        data,
+        {
+            images: existingItem.images
+                .filter(i => !data.imagesToRemove?.includes(i))
+                .concat(...data.images)
+        }
+    )
+
     await existingItem.save()
 
     await updateCategory(existingItem.category, existingItem._id)
+    await updateCategory(oldCategory, existingItem._id, isNewCategory)
 
     return existingItem
 }
@@ -52,17 +68,16 @@ async function addUserRatingForItemId(data, userId) {
 }
 
 async function getRating({ where }) {
-    console.log(where);
     return Rating.find(where)
 }
 
 async function updateCategory(catId, itemId, isDeleting) {
     const cat = await Category.findById(catId)
     if (cat) {
-        if (!isDeleting) {
+        if (!isDeleting && !cat.items.find(i => i == itemId)) {
             cat.items.push(itemId)
         } else {
-            cat.items.splice(cat.items.findIndex(cat.items.find(i => i._id == itemId)), 0)
+            cat.items.splice(cat.items.findIndex(cat.items.find(i => i == itemId)), 0)
         }
         await cat.save()
     }

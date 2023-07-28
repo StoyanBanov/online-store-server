@@ -1,4 +1,4 @@
-const { Schema, model, Types: { ObjectId } } = require('mongoose')
+const { Schema, model, Types: { ObjectId }, default: mongoose } = require('mongoose')
 const Rating = require('./Rating')
 const Category = require('./Category')
 
@@ -41,7 +41,7 @@ const schema = new Schema({
         required: [true, 'Category is required'],
         validate: {
             validator: async catId => {
-                return catId && !!(await Category.findById(catId))
+                return catId && !!(await mongoose.model('Category').findById(catId))
             },
             message: 'No category'
         }

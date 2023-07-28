@@ -91,13 +91,15 @@ itemController.put('/:id', formParse(), hasAdmin(), async (req, res) => {
         if (imagesImg) {
             if (Array.isArray(imagesImg))
                 itemData.images = imagesImg.map(i => i.filename)
-            else itemData.images = imagesImg.filename
+            else itemData.images = [imagesImg.filename]
         }
 
         const item = await editItemById(req.params.id, itemData)
 
         addImages(req.formImages)
-        delImages(req.formBody.imagesToRemove)
+
+        if (req.formBody.imagesToRemove)
+            delImages(Array.isArray(req.formBody.imagesToRemove) ? req.formBody.imagesToRemove : [req.formBody.imagesToRemove])
 
         res.status(200).json(item)
     } catch (error) {
