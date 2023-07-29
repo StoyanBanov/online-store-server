@@ -17,7 +17,7 @@ itemController.get('/', async (req, res) => {
 
 itemController.get('/rating', async (req, res) => {
     try {
-        res.status(200).json(await getRating(where))
+        res.status(200).json(await getRating(req.query))
     } catch (error) {
         console.log(error);
         res.status(404).json(parseError(error))

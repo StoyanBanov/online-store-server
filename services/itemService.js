@@ -73,10 +73,10 @@ async function getRating({ where }) {
 async function updateCategory(catId, itemId, isDeleting) {
     const cat = await Category.findById(catId)
     if (cat) {
-        if (!isDeleting && !cat.items.find(i => i == itemId)) {
+        if (!isDeleting && !cat.items.find(i => i.toString() == itemId.toString())) {
             cat.items.push(itemId)
-        } else {
-            cat.items.splice(cat.items.findIndex(cat.items.find(i => i == itemId)), 0)
+        } else if (isDeleting) {
+            cat.items.splice(cat.items.findIndex(i => i.toString() == itemId.toString()), 0)
         }
         await cat.save()
     }
