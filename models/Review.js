@@ -4,8 +4,8 @@ const Like = require('./Like');
 const schema = new Schema({
     text: {
         type: String,
-        minLength: [20, 'Description must be at least 20 characters long'],
-        maxLength: [2000, 'Description can\'t be more than 2000 characters long']
+        minLength: [10, 'Text must be at least 10 characters long'],
+        maxLength: [2000, 'Text can\'t be more than 2000 characters long']
     },
     item: {
         type: ObjectId,

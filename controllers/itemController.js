@@ -1,5 +1,5 @@
 const { hasAdmin, hasToken } = require('../middleware/guards')
-const { createItem, getAllItems, getItemById, addUserRatingForItemId, getRating, editItemById, deleteItemById } = require('../services/itemService')
+const { createItem, getAllItems, getItemById, addUserRatingForItemId, getRating, editItemById, deleteItemById, getReviews, adReviewForItem } = require('../services/itemService')
 const formParse = require('../middleware/formParse')
 const { parseError } = require('../util/errorParsing')
 const { addImages, delImages } = require('../util/images')
@@ -24,6 +24,15 @@ itemController.get('/rating', async (req, res) => {
     }
 })
 
+itemController.get('/review', async (req, res) => {
+    try {
+        res.status(200).json(await getReviews(req.query))
+    } catch (error) {
+        console.log(error);
+        res.status(404).json(parseError(error))
+    }
+})
+
 itemController.get('/:id', async (req, res) => {
     try {
         const item = await getItemById(req.params.id)
@@ -41,6 +50,15 @@ itemController.get('/:id', async (req, res) => {
 itemController.post('/rating', hasToken(), async (req, res) => {
     try {
         res.status(200).json(await addUserRatingForItemId(req.body, req.user._id))
+    } catch (error) {
+        console.log(error);
+        res.status(400).json(parseError(error))
+    }
+})
+
+itemController.post('/review', hasToken(), async (req, res) => {
+    try {
+        res.status(200).json(await adReviewForItem(req.body, req.user._id))
     } catch (error) {
         console.log(error);
         res.status(400).json(parseError(error))

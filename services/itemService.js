@@ -1,6 +1,7 @@
 const Category = require("../models/Category");
 const Item = require("../models/Item");
 const Rating = require("../models/Rating");
+const Review = require("../models/Review");
 
 async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
     const searchRegex = new RegExp(search, 'i')
@@ -56,6 +57,8 @@ async function deleteItemById(id) {
     return item
 }
 
+//rating
+
 async function addUserRatingForItemId(data, userId) {
     const rating = await Rating.findOne({ _creator: userId, item: data.item })
     if (rating) {
@@ -69,6 +72,17 @@ async function addUserRatingForItemId(data, userId) {
 async function getRating({ where }) {
     return Rating.find(where)
 }
+
+//review
+
+async function getReviews({ where }) {
+    return Review.find(where).populate('_creator')
+}
+
+async function adReviewForItem(data, userId) {
+    return Review.create({ ...data, _creator: userId })
+}
+
 
 async function updateCategory(catId, itemId, isDeleting) {
     const cat = await Category.findById(catId)
@@ -89,5 +103,7 @@ module.exports = {
     editItemById,
     deleteItemById,
     addUserRatingForItemId,
-    getRating
+    getRating,
+    getReviews,
+    adReviewForItem
 }
