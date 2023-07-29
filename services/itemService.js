@@ -76,7 +76,7 @@ async function updateCategory(catId, itemId, isDeleting) {
         if (!isDeleting && !cat.items.find(i => i.toString() == itemId.toString())) {
             cat.items.push(itemId)
         } else if (isDeleting) {
-            cat.items.splice(cat.items.findIndex(i => i.toString() == itemId.toString()), 0)
+            cat.items.splice(cat.items.findIndex(i => i.toString() == itemId.toString()), 1)
         }
         await cat.save()
     }

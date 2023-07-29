@@ -110,7 +110,9 @@ itemController.delete('/:id', hasAdmin(), async (req, res) => {
     try {
         const item = await deleteItemById(req.params.id)
 
-        delImages([...item.images, item.thumbnail])
+        if (item.thumbnail)
+            item.images.push(item.thumbnail)
+        delImages(item.images)
 
         res.status(200).json(item)
     } catch (error) {
