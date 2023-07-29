@@ -30,13 +30,12 @@ async function editItemById(id, data) {
     const oldCategory = existingItem.category
 
     if (!data.images) data.images = []
-    console.log(data.imagesToRemove);
 
     Object.assign(existingItem,
         data,
         {
             images: existingItem.images
-                .filter(i => !data.imagesToRemove?.includes(i))
+                .filter(i => !data.imageNamesToRemove?.includes(i))
                 .concat(...data.images)
         }
     )

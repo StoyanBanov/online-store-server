@@ -8,11 +8,7 @@ const categoryController = require('express').Router()
 
 categoryController.get('/', async (req, res) => {
     try {
-        let where
-        if (req.query.where) {
-            where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? JSON.parse(a) : a)))
-        }
-        res.status(200).json(await getCategories({ ...req.query, where }))
+        res.status(200).json(await getCategories(req.query))
     } catch (error) {
         console.log(error);
         res.status(404).json(parseError(error))
@@ -33,8 +29,9 @@ categoryController.post('/', formParse(), hasAdmin(), async (req, res) => {
         const catData = { ...req.formBody }
         const thumbnailImg = req.formImages.thumbnail
         if (thumbnailImg)
-            itemData.thumbnail = thumbnailImg.filename
+            catData.thumbnail = thumbnailImg.filename
 
+        catData._creator = req.user._id
         const cat = await createCategory(catData)
 
         addImages(req.formImages)
@@ -51,15 +48,15 @@ categoryController.put('/:id', formParse(), hasAdmin(), async (req, res) => {
         const catData = { ...req.formBody }
         const thumbnailImg = req.formImages.thumbnail
 
-        let existingCat = await getCategoryById(req.params.id)
-
+        let existingCat
         if (thumbnailImg) {
             catData.thumbnail = thumbnailImg.filename
+            existingCat = await getCategoryById(req.params.id)
         }
 
-        const cat = await editCategoryById(req.params.id, Object.assign(catData, { childCategories: existingCat.childCategories }))
+        const cat = await editCategoryById(req.params.id, catData)
 
-        if (existingCat.thumbnail)
+        if (existingCat?.thumbnail)
             delImages([existingCat.thumbnail])
 
         addImages(req.formImages)

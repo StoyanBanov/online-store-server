@@ -1,5 +1,4 @@
 const { Schema, model, Types: { ObjectId }, default: mongoose } = require('mongoose');
-const Item = require('./Item');
 
 const schema = new Schema({
     title: {

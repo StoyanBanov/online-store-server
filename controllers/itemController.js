@@ -8,11 +8,7 @@ const itemController = require('express').Router()
 
 itemController.get('/', async (req, res) => {
     try {
-        let where
-        if (req.query.where) {
-            where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? a.substring(1, a.length - 1) : a)))
-        }
-        res.status(200).json(await getAllItems({ ...req.query, where }))
+        res.status(200).json(await getAllItems(req.query))
     } catch (error) {
         console.log(error);
         res.status(404).json(parseError(error))
@@ -21,11 +17,7 @@ itemController.get('/', async (req, res) => {
 
 itemController.get('/rating', async (req, res) => {
     try {
-        let where
-        if (req.query.where) {
-            where = Object.fromEntries(req.query.where.split('&').map(q => q.split('=').map((a, i) => i == 1 ? a.substring(1, a.length - 1) : a)))
-        }
-        res.status(200).json(await getRating({ ...req.query, where }))
+        res.status(200).json(await getRating(where))
     } catch (error) {
         console.log(error);
         res.status(404).json(parseError(error))
@@ -86,8 +78,11 @@ itemController.put('/:id', formParse(), hasAdmin(), async (req, res) => {
         const thumbnailImg = req.formImages.thumbnail
         const imagesImg = req.formImages.images
 
-        if (thumbnailImg)
+        let existingItem
+        if (thumbnailImg) {
             itemData.thumbnail = thumbnailImg.filename
+            existingItem = await getCategoryById(req.params.id)
+        }
         if (imagesImg) {
             if (Array.isArray(imagesImg))
                 itemData.images = imagesImg.map(i => i.filename)
@@ -97,6 +92,9 @@ itemController.put('/:id', formParse(), hasAdmin(), async (req, res) => {
         const item = await editItemById(req.params.id, itemData)
 
         addImages(req.formImages)
+
+        if (existingItem?.thumbnail)
+            delImages([existingCat.thumbnail])
 
         if (req.formBody.imagesToRemove)
             delImages(Array.isArray(req.formBody.imagesToRemove) ? req.formBody.imagesToRemove : [req.formBody.imagesToRemove])
