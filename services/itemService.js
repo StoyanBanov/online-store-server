@@ -3,12 +3,17 @@ const Item = require("../models/Item");
 const Rating = require("../models/Rating");
 const Review = require("../models/Review");
 
-async function getAllItems({ where, limit = 10, skip = 0, search = '' }) {
-    const searchRegex = new RegExp(search, 'i')
-    return Item.find(where)
-        .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
-        .limit(limit)
-        .skip(skip * limit)
+async function getAllItems({ where, limit = 10, skip = 0, search = '', count }) {
+    if (count) {
+        return Item.find({}).count()
+    } else {
+        const searchRegex = new RegExp(search, 'i')
+        return Item.find(where)
+            .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
+            .limit(limit)
+            .skip(skip * limit)
+            .populate('category')
+    }
 }
 
 async function getItemById(id) {
