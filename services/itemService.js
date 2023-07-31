@@ -68,13 +68,24 @@ async function deleteItemById(id) {
 //rating
 
 async function addUserRatingForItemId(data, userId) {
-    const rating = await Rating.findOne({ _creator: userId, item: data.item })
-    if (rating) {
-        rating.rating = data.rating
-        await rating.save()
+
+    const item = await Item.findById(data.item)
+
+    if (item) {
+        let rating = await Rating.findOne({ _creator: userId, item: data.item })
+        if (rating) {
+            rating.rating = data.rating
+            await rating.save()
+        } else {
+            rating = await Rating.create({ ...data, _creator: userId })
+        }
+
+        const ratings = await Rating.find({ item: data.item })
+        item.rating = (ratings.reduce((rating, curRate) => rating + curRate.rating, 0) / ratings.length) || 0
+        item.save()
+
         return rating
-    }
-    return Rating.create({ ...data, _creator: userId })
+    } else throw new Error('No such item')
 }
 
 async function getRating({ where }) {

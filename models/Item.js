@@ -46,6 +46,10 @@ const schema = new Schema({
             message: 'No category'
         }
     },
+    rating: {
+        type: Number,
+        default: 0
+    },
     _creator: {
         type: ObjectId,
         ref: 'User',
@@ -56,12 +60,6 @@ const schema = new Schema({
 schema.virtual('totalRatingVotes').get(function () {
     return Rating.count({ item: this._id })
 })
-
-schema.virtual('rating').get(async function () {
-    const ratings = await Rating.find({ item: this._id })
-    return (ratings.reduce((rating, curRate) => rating + curRate.rating, 0) / ratings.length) || 0
-})
-
 const Item = model('Item', schema)
 
 module.exports = Item

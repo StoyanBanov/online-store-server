@@ -38,7 +38,6 @@ itemController.get('/:id', async (req, res) => {
         const item = await getItemById(req.params.id)
         res.status(200).json({
             ...item._doc,
-            rating: await item.rating,
             totalRatingVotes: await item.totalRatingVotes
         })
     } catch (error) {
