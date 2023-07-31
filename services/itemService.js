@@ -3,17 +3,20 @@ const Item = require("../models/Item");
 const Rating = require("../models/Rating");
 const Review = require("../models/Review");
 
-async function getAllItems({ where, limit = 10, skip = 0, search = '', count }) {
-    if (count) {
-        return Item.find({}).count()
-    } else {
-        const searchRegex = new RegExp(search, 'i')
-        return Item.find(where)
-            .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
-            .limit(limit)
-            .skip(skip * limit)
-            .populate('category')
-    }
+async function getAllItems({ where, limit, skip = 0, search = '', count, sortBy }) {
+    const searchRegex = new RegExp(search, 'i')
+    query = Item.find(where)
+        .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
+
+    if (limit)
+        query = query.limit(limit).skip(skip * limit)
+
+    if (sortBy)
+        query = query.sort(sortBy)
+
+    query = query.populate('category')
+
+    return count ? query.count() : query
 }
 
 async function getItemById(id) {
