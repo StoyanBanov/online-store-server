@@ -8,11 +8,11 @@ async function getAllItems({ where, limit, skip = 0, search = '', count, sortBy 
     query = Item.find(where)
         .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
 
+    if (sortBy)
+        query = query.sort({ ...sortBy, _id: -1 })
+
     if (limit)
         query = query.limit(limit).skip(skip * limit)
-
-    if (sortBy)
-        query = query.sort(sortBy)
 
     query = query.populate('category')
 
