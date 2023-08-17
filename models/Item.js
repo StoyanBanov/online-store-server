@@ -53,9 +53,9 @@ const schema = new Schema({
     _creator: {
         type: ObjectId,
         ref: 'User',
-        //required: true
+        required: true
     }
-})
+}, { strict: false })
 
 schema.virtual('totalRatingVotes').get(function () {
     return Rating.count({ item: this._id })

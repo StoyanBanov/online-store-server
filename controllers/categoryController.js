@@ -26,12 +26,24 @@ categoryController.get('/:id', async (req, res) => {
 
 categoryController.post('/', formParse(), hasAdmin(), async (req, res) => {
     try {
-        const catData = { ...req.formBody }
+
+        const catData = { title: req.formBody.title }
+
+        if (req.formBody.parentCategory)
+            catData.parentCategory = req.formBody.parentCategory
+
         const thumbnailImg = req.formImages.thumbnail
         if (thumbnailImg)
             catData.thumbnail = thumbnailImg.filename
 
+        catData.itemFields = {}
+        for (const [k, v] of Object.entries(req.formBody)) {
+            if (!['title', 'parentCategory', 'thumbnail'].includes(k))
+                catData.itemFields[k] = v
+        }
+
         catData._creator = req.user._id
+
         const cat = await createCategory(catData)
 
         addImages(req.formImages)
@@ -45,13 +57,24 @@ categoryController.post('/', formParse(), hasAdmin(), async (req, res) => {
 
 categoryController.put('/:id', formParse(), hasAdmin(), async (req, res) => {
     try {
-        const catData = { ...req.formBody }
+
+        const catData = { title: req.formBody.title }
+
+        if (req.formBody.parentCategory)
+            catData.parentCategory = req.formBody.parentCategory
+
         const thumbnailImg = req.formImages.thumbnail
 
         let existingCat
         if (thumbnailImg) {
             catData.thumbnail = thumbnailImg.filename
             existingCat = await getCategoryById(req.params.id)
+        }
+
+        catData.itemFields = {}
+        for (const [k, v] of Object.entries(req.formBody)) {
+            if (!['title', 'parentCategory', 'thumbnail'].includes(k))
+                catData.itemFields[k] = v
         }
 
         const cat = await editCategoryById(req.params.id, catData)

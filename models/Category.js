@@ -29,6 +29,7 @@ const schema = new Schema({
         type: [ObjectId],
         ref: 'Item'
     },
+    itemFields: { type: Object },
     _creator: {
         type: ObjectId,
         ref: 'User',
