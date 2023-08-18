@@ -3,16 +3,19 @@ const Item = require("../models/Item");
 const Rating = require("../models/Rating");
 const Review = require("../models/Review");
 
-async function getAllItems({ where, limit, skip = 0, search = '', count, sortBy }) {
+async function getAllItems({ where, limit, skip = 0, search = '', count, sortBy, minPrice, maxPrice }) {
     const searchRegex = new RegExp(search, 'i')
     query = Item.find(where)
-        .where({ $or: [{ title: { $regex: searchRegex } }, { description: { $regex: searchRegex } }] })
+        .where({ title: { $regex: searchRegex } })
 
     if (sortBy)
         query = query.sort({ ...sortBy, _id: -1 })
 
     if (limit)
         query = query.limit(limit).skip(skip * limit)
+
+    if (minPrice || maxPrice)
+        query = query.where({ price: { $gte: minPrice ?? 0, $lte: maxPrice || Number.MAX_SAFE_INTEGER } })
 
     query = query.populate('category')
 
