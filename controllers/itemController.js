@@ -78,6 +78,8 @@ itemController.post('/', formParse(), hasAdmin(), async (req, res) => {
             else itemData.images = imagesImg.filename
         }
 
+        itemData._creator = req.user._id
+
         const item = await createItem(itemData)
 
         addImages(req.formImages)

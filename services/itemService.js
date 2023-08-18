@@ -49,6 +49,12 @@ async function editItemById(id, data) {
         }
     )
 
+    const itemCategory = await Category.findById(existingItem.category)
+
+    for (const key in itemCategory.itemFields) {
+        existingItem.set(key, data[key], { strict: false })
+    }
+
     await existingItem.save()
 
     await updateCategory(existingItem.category, existingItem._id)
