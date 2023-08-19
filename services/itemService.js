@@ -5,8 +5,17 @@ const Review = require("../models/Review");
 
 async function getAllItems({ where, limit, skip = 0, search = '', count, sortBy, minPrice, maxPrice }) {
     const searchRegex = new RegExp(search, 'i')
-    query = Item.find(where)
+    query = Item.find()
         .where({ title: { $regex: searchRegex } })
+
+    if (where) {
+        for (const [key, value] of Object.entries(where)) {
+            if (Array.isArray(value))
+                query = query.where({ [key]: { $in: value } })
+            else
+                query = query.where({ [key]: value })
+        }
+    }
 
     if (sortBy)
         query = query.sort({ ...sortBy, _id: -1 })
