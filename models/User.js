@@ -51,6 +51,10 @@ const schema = new Schema({
         type: ObjectId,
         ref: 'ShoppingCart'
     },
+    purchases: {
+        type: [ObjectId],
+        ref: 'Purchase'
+    },
     roles: {
         type: [String],
         enum: ['user', 'admin'],

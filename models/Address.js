@@ -24,11 +24,6 @@ const schema = new Schema({
         type: String,
         minLength: [1, 'County must be at least 1 character long'],
         maxLength: [30, 'County can\'t be more than 30 characters long']
-    },
-    country: {
-        type: String,
-        minLength: [1, 'Country must be at least 1 character long'],
-        maxLength: [30, 'Country can\'t be more than 30 characters long']
     }
 })
 
