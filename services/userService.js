@@ -3,7 +3,7 @@ const Purchase = require("../models/Purchase");
 const User = require("../models/User");
 
 async function getUserById(id) {
-    return User.findById(id).populate('address').populate('secondAddress')
+    return User.findById(id).populate('address').populate('secondAddress').populate('purchases')
 }
 
 async function addUserAddress(userId, addressData) {
@@ -40,9 +40,7 @@ async function addUserPurchase(userId, purchaseData) {
     if (user) {
         const purchase = await Purchase.create({ ...purchaseData, user: userId })
 
-        if (!user.address) {
-            user.purchase = purchase._id
-        }
+        user.purchases.push(purchase._id)
         await user.save()
 
         return purchase
