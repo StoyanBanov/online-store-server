@@ -1,4 +1,5 @@
 const Address = require("../models/Address");
+const Purchase = require("../models/Purchase");
 const User = require("../models/User");
 
 async function getUserById(id) {
@@ -33,8 +34,24 @@ async function editUserAddress(id, data) {
     } else throw new Error('No such address')
 }
 
+async function addUserPurchase(userId, purchaseData) {
+    const user = await User.findById(userId)
+
+    if (user) {
+        const purchase = await Purchase.create({ ...purchaseData, user: userId })
+
+        if (!user.address) {
+            user.purchase = purchase._id
+        }
+        await user.save()
+
+        return purchase
+    } else throw new Error('No such user')
+}
+
 module.exports = {
     getUserById,
     addUserAddress,
-    editUserAddress
+    editUserAddress,
+    addUserPurchase
 }

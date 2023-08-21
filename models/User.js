@@ -53,7 +53,8 @@ const schema = new Schema({
     },
     purchases: {
         type: [ObjectId],
-        ref: 'Purchase'
+        ref: 'Purchase',
+        default: []
     },
     roles: {
         type: [String],

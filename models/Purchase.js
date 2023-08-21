@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, Types: { ObjectId } } = require('mongoose')
 
 const schema = new Schema({
     items: [
@@ -21,7 +21,8 @@ const schema = new Schema({
     ],
     paymentMethod: { type: String, required: true, enum: ['cash', 'card'] },
     deliverTo: { type: String, required: true, enum: ['office', 'address'] },
-    address: { type: String, required: true }
+    address: { type: String, required: true },
+    user: { type: ObjectId, required: true }
 })
 
 const Purchase = model('Purchase', schema)
