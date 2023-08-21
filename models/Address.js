@@ -16,11 +16,16 @@ const schema = new Schema({
         minLength: [1, 'ZIP code must be at least 1 character long'],
         maxLength: [5, 'ZIP code can\'t be more than 5 characters long'],
         validate: {
-            validator: value => value.every(n => Number.isInteger(n)),
+            validator: value => value.split('').every(n => !isNaN(Number(n))),
             message: 'ZIP code must consist of digits only'
         }
     },
     county: {
+        type: String,
+        minLength: [1, 'County must be at least 1 character long'],
+        maxLength: [30, 'County can\'t be more than 30 characters long']
+    },
+    country: {
         type: String,
         minLength: [1, 'County must be at least 1 character long'],
         maxLength: [30, 'County can\'t be more than 30 characters long']
