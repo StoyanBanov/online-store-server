@@ -3,7 +3,18 @@ const Purchase = require("../models/Purchase");
 const User = require("../models/User");
 
 async function getUserById(id) {
-    return User.findById(id).populate('address').populate('secondAddress').populate('purchases')
+    return User.findById(id)
+        .populate('address')
+        .populate('secondAddress')
+        .populate({
+            path: 'purchases',
+            populate: {
+                path: 'items',
+                populate: {
+                    path: 'item'
+                }
+            }
+        })
 }
 
 async function addUserAddress(userId, addressData) {
