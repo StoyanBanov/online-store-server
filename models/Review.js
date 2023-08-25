@@ -12,6 +12,11 @@ const schema = new Schema({
         ref: 'Item',
         required: true
     },
+    likes: {
+        type: [ObjectId],
+        ref: 'Like',
+        default: []
+    },
     _creator: {
         type: ObjectId,
         ref: 'User',

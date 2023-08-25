@@ -1,5 +1,5 @@
 const { hasAdmin, hasToken } = require('../middleware/guards')
-const { createItem, getAllItems, getItemById, addUserRatingForItemId, getRating, editItemById, deleteItemById, getReviews, adReviewForItem } = require('../services/itemService')
+const { createItem, getAllItems, getItemById, addUserRatingForItemId, getRating, editItemById, deleteItemById, getReviews, adReviewForItem, addLikeForReview, removeLikeForReview } = require('../services/itemService')
 const formParse = require('../middleware/formParse')
 const { parseError } = require('../util/errorParsing')
 const { addImages, delImages } = require('../util/images')
@@ -58,6 +58,24 @@ itemController.post('/rating', hasToken(), async (req, res) => {
 itemController.post('/review', hasToken(), async (req, res) => {
     try {
         res.status(200).json(await adReviewForItem(req.body, req.user._id))
+    } catch (error) {
+        console.log(error);
+        res.status(400).json(parseError(error))
+    }
+})
+
+itemController.post('/review/likes', hasToken(), async (req, res) => {
+    try {
+        res.status(200).json(await addLikeForReview(req.body, req.user._id))
+    } catch (error) {
+        console.log(error);
+        res.status(400).json(parseError(error))
+    }
+})
+
+itemController.delete('/review/likes', hasToken(), async (req, res) => {
+    try {
+        res.status(200).json(await removeLikeForReview(req.body, req.user._id))
     } catch (error) {
         console.log(error);
         res.status(400).json(parseError(error))

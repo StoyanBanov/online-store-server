@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Item = require("../models/Item");
+const Like = require("../models/Like");
 const Rating = require("../models/Rating");
 const Review = require("../models/Review");
 
@@ -112,12 +113,40 @@ async function getRating({ where }) {
 
 //review
 
-async function getReviews({ where }) {
-    return Review.find(where).populate('_creator')
+async function getReviews({ where, limit, skip = 0 }) {
+    return Review.find(where).limit(limit).skip(skip).populate('_creator').populate('likes')
 }
 
 async function adReviewForItem(data, userId) {
     return Review.create({ ...data, _creator: userId })
+}
+
+async function addLikeForReview({ reviewId }, userId) {
+    const review = await Review.findById(reviewId).populate('likes')
+    if (review) {
+        if (review.likes.some(l => l._creator === userId))
+            throw new Error('You already liked this review')
+
+        const like = await Like.create({ _creator: userId })
+
+        review.likes.push(like._id)
+        await review.save()
+
+        return like
+    } else throw new Error('No such review')
+}
+
+async function removeLikeForReview({ reviewId }, userId) {
+    const review = await Review.findById(reviewId).populate('likes')
+    if (review) {
+        const likeId = review.likes.splice(review.likes.findIndex(l => l._creator === userId), 1)[0]._id
+
+        const like = await Like.findByIdAndRemove(likeId)
+
+        await review.save()
+
+        return like
+    } else throw new Error('No such review')
 }
 
 
@@ -142,5 +171,7 @@ module.exports = {
     addUserRatingForItemId,
     getRating,
     getReviews,
-    adReviewForItem
+    adReviewForItem,
+    addLikeForReview,
+    removeLikeForReview
 }
