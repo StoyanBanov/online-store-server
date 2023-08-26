@@ -114,7 +114,7 @@ async function getRating({ where }) {
 //review
 
 async function getReviews({ where, limit, skip = 0, count }) {
-    const query = Review.find(where).limit(limit).skip(skip).populate('_creator').populate('likes')
+    const query = Review.find(where).limit(limit).skip(skip * limit).populate('_creator').populate('likes').sort({ _id: -1 })
 
     return count ? query.count() : query
 }
