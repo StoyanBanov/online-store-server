@@ -6,7 +6,7 @@ const Review = require("../models/Review");
 
 async function getAllItems({ where, limit, skip = 0, search = '', count, sortBy, minPrice, maxPrice }) {
     const searchRegex = new RegExp(search, 'i')
-    query = Item.find()
+    const query = Item.find()
         .where({ title: { $regex: searchRegex } })
 
     if (where) {
@@ -113,8 +113,10 @@ async function getRating({ where }) {
 
 //review
 
-async function getReviews({ where, limit, skip = 0 }) {
-    return Review.find(where).limit(limit).skip(skip).populate('_creator').populate('likes')
+async function getReviews({ where, limit, skip = 0, count }) {
+    const query = Review.find(where).limit(limit).skip(skip).populate('_creator').populate('likes')
+
+    return count ? query.count() : query
 }
 
 async function adReviewForItem(data, userId) {
