@@ -1,5 +1,6 @@
 const Address = require("../models/Address");
 const Purchase = require("../models/Purchase");
+const ShoppingCart = require("../models/ShoppingCart");
 const User = require("../models/User");
 
 async function getUserById(id) {
@@ -46,16 +47,21 @@ async function editUserAddress(id, data) {
 }
 
 async function addUserPurchase(userId, purchaseData) {
-    const user = await User.findById(userId)
+    let purchase
+    if (userId) {
+        const user = await User.findById(userId).populate('shoppingCart')
+        if (user && user.shoppingCart.items.length) {
+            purchase = await Purchase.create({ ...purchaseData, user: userId })
 
-    if (user) {
-        const purchase = await Purchase.create({ ...purchaseData, user: userId })
+            user.purchases.push(purchase._id)
+            await user.save()
+        } else
+            throw new Error('No such user or no products in cart')
+    } else {
+        purchase = await Purchase.create({ ...purchaseData, user: userId })
+    }
 
-        user.purchases.push(purchase._id)
-        await user.save()
-
-        return purchase
-    } else throw new Error('No such user')
+    return purchase
 }
 
 module.exports = {

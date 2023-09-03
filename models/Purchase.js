@@ -19,6 +19,8 @@ const schema = new Schema({
             },
         }
     ],
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     paymentMethod: { type: String, required: true, enum: ['cash', 'card'] },
     deliverTo: { type: String, required: true, enum: ['office', 'address'] },
     address: { type: String, required: true },
