@@ -52,9 +52,10 @@ async function addPurchase(userId, purchaseData) {
     if (items.length != purchaseData.items.length)
         throw new Error('Incorrect item data')
 
-    // for (const item of items) {
-    //     i
-    // }
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].count < purchaseData.items[i].count)
+            throw new Error(`Item ${items[i].title} has only ${items[i].count} units available!`)
+    }
 
     let purchase
 
@@ -70,6 +71,12 @@ async function addPurchase(userId, purchaseData) {
     } else {
         purchase = await Purchase.create({ ...purchaseData })
     }
+
+    for (let i = 0; i < items.length; i++) {
+        items[i].count -= purchase.items[i].count
+    }
+
+    await Promise.all(items.map(i => i.save()))
 
     return purchase
 }
