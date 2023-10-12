@@ -25,7 +25,9 @@ const schema = new Schema({
     deliverTo: { type: String, required: true, enum: ['office', 'address'] },
     address: { type: String, required: true },
     user: { type: ObjectId },
-    phone: { type: String, required: true }
+    phone: { type: String, required: true },
+    verified: { type: Boolean, required: true, default: false },
+    verifiedBy: { type: ObjectId }
 })
 
 const Purchase = model('Purchase', schema)
