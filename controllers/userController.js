@@ -1,4 +1,4 @@
-const { getUserById, addUserAddress, editUserAddress, addPurchase } = require('../services/userService')
+const { getUserById, addUserAddress, editUserAddress, addPurchase, getAllPurchases } = require('../services/userService')
 const { parseError } = require('../util/errorParsing')
 
 const userController = require('express').Router()
@@ -24,6 +24,17 @@ userController.post('/address', async (req, res) => {
 userController.put('/address/:id', async (req, res) => {
     try {
         res.status(201).json((await editUserAddress(req.params.id, req.body)))
+    } catch (error) {
+        console.log(error);
+        res.status(400).json(parseError(error))
+    }
+})
+
+userController.get('/purchase', async (req, res) => {
+    try {
+        if (req.user?.roles.includes('admin'))
+            res.status(200).json((await getAllPurchases(req.query)))
+        else throw new Error('Admin permissions mandatory for this request')
     } catch (error) {
         console.log(error);
         res.status(400).json(parseError(error))

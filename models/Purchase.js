@@ -27,7 +27,7 @@ const schema = new Schema({
     user: { type: ObjectId },
     phone: { type: String, required: true },
     verified: { type: Boolean, required: true, default: false },
-    verifiedBy: { type: ObjectId }
+    completed: { type: Boolean, required: true, default: false }
 })
 
 const Purchase = model('Purchase', schema)

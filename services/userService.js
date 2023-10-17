@@ -47,6 +47,12 @@ async function editUserAddress(id, data) {
     } else throw new Error('No such address')
 }
 
+async function getAllPurchases({ where }) {
+    if (where)
+        return Purchase.find().where(where)
+    return Purchase.find()
+}
+
 async function addPurchase(userId, purchaseData) {
     let items = await Item.find({ _id: { $in: purchaseData.items.map(i => i.item) } })
     if (items.length != purchaseData.items.length)
@@ -85,5 +91,6 @@ module.exports = {
     getUserById,
     addUserAddress,
     editUserAddress,
+    getAllPurchases,
     addPurchase
 }
