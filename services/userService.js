@@ -93,7 +93,9 @@ async function editPurchase(id, data) {
     if (existingPurchase) {
         Object.assign(existingPurchase, data)
 
-        existingPurchase.save()
+        await existingPurchase.save()
+
+        return existingPurchase
     } else throw new Error('No such purchase')
 }
 
