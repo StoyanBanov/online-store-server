@@ -87,10 +87,21 @@ async function addPurchase(userId, purchaseData) {
     return purchase
 }
 
+async function editPurchase(id, data) {
+    const existingPurchase = await Purchase.findById(id)
+    //todo item validation
+    if (existingPurchase) {
+        Object.assign(existingPurchase, data)
+
+        existingPurchase.save()
+    } else throw new Error('No such purchase')
+}
+
 module.exports = {
     getUserById,
     addUserAddress,
     editUserAddress,
     getAllPurchases,
-    addPurchase
+    addPurchase,
+    editPurchase
 }

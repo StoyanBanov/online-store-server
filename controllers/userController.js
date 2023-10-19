@@ -1,4 +1,4 @@
-const { getUserById, addUserAddress, editUserAddress, addPurchase, getAllPurchases } = require('../services/userService')
+const { getUserById, addUserAddress, editUserAddress, addPurchase, getAllPurchases, editPurchase } = require('../services/userService')
 const { parseError } = require('../util/errorParsing')
 
 const userController = require('express').Router()
@@ -44,6 +44,15 @@ userController.get('/purchase', async (req, res) => {
 userController.post('/purchase', async (req, res) => {
     try {
         res.status(201).json((await addPurchase(req.user?._id, req.body)))
+    } catch (error) {
+        console.log(error);
+        res.status(400).json(parseError(error))
+    }
+})
+
+userController.put('/purchase/:id', async (req, res) => {
+    try {
+        res.status(200).json((await editPurchase(req.params.id, req.body)))
     } catch (error) {
         console.log(error);
         res.status(400).json(parseError(error))
