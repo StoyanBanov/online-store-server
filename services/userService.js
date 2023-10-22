@@ -48,9 +48,10 @@ async function editUserAddress(id, data) {
 }
 
 async function getAllPurchases({ where }) {
+    let query = Purchase.find().populate({ path: 'items', populate: { path: 'item' } })
     if (where)
-        return Purchase.find().where(where)
-    return Purchase.find()
+        query = query.where(where)
+    return query
 }
 
 async function addPurchase(userId, purchaseData) {
