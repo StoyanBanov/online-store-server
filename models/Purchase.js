@@ -26,6 +26,7 @@ const schema = new Schema({
     address: { type: String, required: true },
     user: { type: ObjectId },
     phone: { type: String, required: true },
+    info: { type: String },
     createdOn: { type: Date, required: true, default: Date.now() },
     verified: { type: Boolean, required: true, default: false },
     completed: { type: Boolean, required: true, default: false }
