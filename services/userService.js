@@ -1,8 +1,8 @@
 const Address = require("../models/Address");
 const Item = require("../models/Item");
 const Purchase = require("../models/Purchase");
-const ShoppingCart = require("../models/ShoppingCart");
 const User = require("../models/User");
+const { validatePurchaseItems } = require("../util/serviceUtil");
 
 async function getUserById(id) {
     return User.findById(id)
@@ -55,9 +55,8 @@ async function getAllPurchases({ where }) {
 }
 
 async function addPurchase(userId, purchaseData) {
-    let items = await Item.find({ _id: { $in: purchaseData.items.map(i => i.item) } })
-    if (items.length != purchaseData.items.length)
-        throw new Error('Incorrect item data')
+    validatePurchaseItems(purchase)
+    let items = await Item.find({ _id: { $in: purchase.items.map(i => i.item) } })
 
     for (let i = 0; i < items.length; i++) {
         if (items[i].count < purchaseData.items[i].count)
@@ -90,7 +89,10 @@ async function addPurchase(userId, purchaseData) {
 
 async function editPurchase(id, data) {
     const existingPurchase = await Purchase.findById(id)
+
     //todo item validation
+    validatePurchaseItems(purchase)
+
     if (existingPurchase) {
         Object.assign(existingPurchase, data)
 
