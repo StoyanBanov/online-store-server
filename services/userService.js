@@ -2,7 +2,7 @@ const Address = require("../models/Address");
 const Item = require("../models/Item");
 const Purchase = require("../models/Purchase");
 const User = require("../models/User");
-const { validatePurchaseItems } = require("../util/serviceUtil");
+const { validatePurchaseItems, validateItemsCount } = require("../util/serviceUtil");
 
 async function getUserById(id) {
     return User.findById(id)
@@ -55,13 +55,10 @@ async function getAllPurchases({ where }) {
 }
 
 async function addPurchase(userId, purchaseData) {
-    validatePurchaseItems(purchase)
-    let items = await Item.find({ _id: { $in: purchase.items.map(i => i.item) } })
+    validatePurchaseItems(purchaseData)
+    let items = await Item.find({ _id: { $in: purchaseData.items.map(i => i.item) } })
 
-    for (let i = 0; i < items.length; i++) {
-        if (items[i].count < purchaseData.items[i].count)
-            throw new Error(`Item ${items[i].title} has only ${items[i].count} units available!`)
-    }
+    validateItemsCount(items, purchaseData)
 
     let purchase
 
@@ -91,7 +88,7 @@ async function editPurchase(id, data) {
     const existingPurchase = await Purchase.findById(id)
 
     //todo item validation
-    validatePurchaseItems(purchase)
+    validatePurchaseItems(existingPurchase)
 
     if (existingPurchase) {
         Object.assign(existingPurchase, data)
