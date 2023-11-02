@@ -1,4 +1,4 @@
-# Online Store Server
+# Online Store Express.js Server
 
 **manages**
 products
