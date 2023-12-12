@@ -13,6 +13,11 @@ const schema = new Schema({
         min: [0.01, 'Price must be a positive number'],
         max: [999999, 'Price can\'t exceed 999 999'],
     },
+    discount: {
+        type: Number,
+        min: [0, 'Discount must be a non-negative number'],
+        max: [999999, 'Discount can\'t exceed 999 999'],
+    },
     description: {
         type: String,
         minLength: [20, 'Description must be at least 20 characters long'],
